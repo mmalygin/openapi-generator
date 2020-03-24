@@ -47,7 +47,7 @@ public abstract class JavaJaxrsBaseTest {
         DefaultGenerator generator = new DefaultGenerator();
         generator.opts(input).generate();
 
-        String jsonTypeInfo = "@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = \"className\", visible = true)";
+        String jsonTypeInfo = "@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = \"className\", visible = true)";
         String jsonSubType = "@JsonSubTypes({\n" +
                 "  @JsonSubTypes.Type(value = Dog.class, name = \"Dog\"),\n" +
                 "  @JsonSubTypes.Type(value = Cat.class, name = \"Cat\"),\n" +
@@ -78,7 +78,7 @@ public abstract class JavaJaxrsBaseTest {
         generator.opts(input).generate();
 
 
-        String jsonTypeInfo = "@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = \"className\", visible = true)";
+        String jsonTypeInfo = "@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = \"className\", visible = true)";
         String jsonSubType = "@JsonSubTypes({\n" +
                 "  @JsonSubTypes.Type(value = Dog.class, name = \"Dog\"),\n" +
                 "  @JsonSubTypes.Type(value = Cat.class, name = \"Cat\"),\n" +
