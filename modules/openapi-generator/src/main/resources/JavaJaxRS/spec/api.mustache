@@ -16,6 +16,17 @@ import java.util.List;
 {{#useBeanValidation}}import javax.validation.constraints.*;
 import javax.validation.Valid;{{/useBeanValidation}}
 
+{{#useAsyncResponses}}
+{{#useResteasyAsyncResponses}}
+import org.jboss.resteasy.annotations.Suspend;
+import org.jboss.resteasy.spi.AsynchronousResponse;
+{{/useResteasyAsyncResponses}}
+{{^useResteasyAsyncResponses}}
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
+{{/useResteasyAsyncResponses}}
+{{/useAsyncResponses}}
+
 @Path("{{commonPath}}"){{#useSwaggerAnnotations}}
 @Api(description = "the {{{baseName}}} API"){{/useSwaggerAnnotations}}{{#hasConsumes}}
 @Consumes({ {{#consumes}}"{{{mediaType}}}"{{#hasMore}}, {{/hasMore}}{{/consumes}} }){{/hasConsumes}}{{#hasProduces}}

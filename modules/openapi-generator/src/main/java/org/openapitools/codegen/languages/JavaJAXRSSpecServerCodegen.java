@@ -29,6 +29,8 @@ public class JavaJAXRSSpecServerCodegen extends AbstractJavaJAXRSServerCodegen {
 
     public static final String INTERFACE_ONLY = "interfaceOnly";
     public static final String RETURN_RESPONSE = "returnResponse";
+    public static final String USE_ASYNC_RESPONSES = "useAsyncResponses";
+    public static final String USE_RESTEASY_ASYNC_RESPONSES = "useResteasyAsyncResponses";
     public static final String GENERATE_POM = "generatePom";
     public static final String USE_SWAGGER_ANNOTATIONS = "useSwaggerAnnotations";
     public static final String JACKSON = "jackson";
@@ -43,6 +45,8 @@ public class JavaJAXRSSpecServerCodegen extends AbstractJavaJAXRSServerCodegen {
 
     private boolean interfaceOnly = false;
     private boolean returnResponse = false;
+    private boolean useAsyncResponses = false;
+    private boolean useResteasyAsyncResponses = false;
     private boolean generatePom = true;
     private boolean generateBuilders = false;
     private boolean useSwaggerAnnotations = true;
@@ -101,6 +105,8 @@ public class JavaJAXRSSpecServerCodegen extends AbstractJavaJAXRSServerCodegen {
         cliOptions.add(CliOption.newBoolean(GENERATE_BUILDERS, "Whether to generate builders for models.").defaultValue(String.valueOf(generateBuilders)));
         cliOptions.add(CliOption.newBoolean(INTERFACE_ONLY, "Whether to generate only API interface stubs without the server files.").defaultValue(String.valueOf(interfaceOnly)));
         cliOptions.add(CliOption.newBoolean(RETURN_RESPONSE, "Whether generate API interface should return javax.ws.rs.core.Response instead of a deserialized entity. Only useful if interfaceOnly is true.").defaultValue(String.valueOf(returnResponse)));
+        cliOptions.add(CliOption.newBoolean(USE_ASYNC_RESPONSES, "Use asyncronous responses in generated API interface. Only useful if interfaceOnly is true").defaultValue(String.valueOf(useAsyncResponses)));
+        cliOptions.add(CliOption.newBoolean(USE_RESTEASY_ASYNC_RESPONSES, "Use old \"org.jboss.resteasy.annotations.Suspend\" and \"org.jboss.resteasy.spi.AsynchronousResponse\" instead of JaxRS ones for asyncronous responses in generated API interface (useful for JaxRS < 2.x). Only useful if interfaceOnly is true").defaultValue(String.valueOf(useResteasyAsyncResponses)));
         cliOptions.add(CliOption.newBoolean(USE_SWAGGER_ANNOTATIONS, "Whether to generate Swagger annotations.", useSwaggerAnnotations));
         cliOptions.add(CliOption.newString(OPEN_API_SPEC_FILE_LOCATION, "Location where the file containing the spec will be generated in the output folder. No file generated when set to null or empty string."));
     }
@@ -120,6 +126,18 @@ public class JavaJAXRSSpecServerCodegen extends AbstractJavaJAXRSServerCodegen {
             returnResponse = Boolean.valueOf(additionalProperties.get(RETURN_RESPONSE).toString());
             if (!returnResponse) {
                 additionalProperties.remove(RETURN_RESPONSE);
+            }
+        }
+        if (additionalProperties.containsKey(USE_ASYNC_RESPONSES)) {
+            useAsyncResponses = Boolean.valueOf(additionalProperties.get(USE_ASYNC_RESPONSES).toString());
+            if (!useAsyncResponses) {
+                additionalProperties.remove(USE_ASYNC_RESPONSES);
+            }
+        }
+        if (additionalProperties.containsKey(USE_RESTEASY_ASYNC_RESPONSES)) {
+            useResteasyAsyncResponses = Boolean.valueOf(additionalProperties.get(USE_RESTEASY_ASYNC_RESPONSES).toString());
+            if (!useAsyncResponses) {
+                additionalProperties.remove(USE_RESTEASY_ASYNC_RESPONSES);
             }
         }
         if (QUARKUS_LIBRARY.equals(library) || THORNTAIL_LIBRARY.equals(library) || HELIDON_LIBRARY.equals(library) || OPEN_LIBERTY_LIBRARY.equals(library) || KUMULUZEE_LIBRARY.equals(library)) {
