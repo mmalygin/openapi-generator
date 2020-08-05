@@ -2328,10 +2328,10 @@ public class DefaultCodegen implements CodegenConfig {
 
             // if schema has properties outside of allOf/oneOf/anyOf also add them to m
             if (composed.getProperties() != null && !composed.getProperties().isEmpty()) {
-                if (composed.getOneOf() != null && !composed.getOneOf().isEmpty()) {
-                    LOGGER.warn("'oneOf' is intended to include only the additional optional OAS extension discriminator object. " +
-                            "For more details, see https://json-schema.org/draft/2019-09/json-schema-core.html#rfc.section.9.2.1.3 and the OAS section on 'Composition and Inheritance'.");
-                }
+                //if (composed.getOneOf() != null && !composed.getOneOf().isEmpty()) {
+                //    LOGGER.warn("'oneOf' is intended to include only the additional optional OAS extension discriminator object. " +
+                //            "For more details, see https://json-schema.org/draft/2019-09/json-schema-core.html#rfc.section.9.2.1.3 and the OAS section on 'Composition and Inheritance'.");
+                //}
                 addVars(m, unaliasPropertySchema(composed.getProperties()), composed.getRequired(), null, null);
             }
 

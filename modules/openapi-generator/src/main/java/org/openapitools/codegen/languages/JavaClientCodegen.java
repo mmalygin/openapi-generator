@@ -62,6 +62,9 @@ public class JavaClientCodegen extends AbstractJavaCodegen
     public static final String MICROPROFILE_FRAMEWORK = "microprofileFramework";
     public static final String USE_ABSTRACTION_FOR_FILES = "useAbstractionForFiles";
 
+    public static final String INTERFACE_ONLY = "interfaceOnly";
+    public static final String ADDITIONAL_API_ANNOTATIONS = "additionalApiAnnotations";
+
     public static final String PLAY_24 = "play24";
     public static final String PLAY_25 = "play25";
     public static final String PLAY_26 = "play26";
@@ -178,6 +181,9 @@ public class JavaClientCodegen extends AbstractJavaCodegen
         serializationOptions.put(SERIALIZATION_LIBRARY_JACKSON, "Use Jackson as serialization library");
         serializationLibrary.setEnum(serializationOptions);
         cliOptions.add(serializationLibrary);
+        
+        cliOptions.add(CliOption.newBoolean(INTERFACE_ONLY, "Generate interface(s) only - retrofit2 only"));
+        cliOptions.add(CliOption.newString(ADDITIONAL_API_ANNOTATIONS, "Additional annotations for API (class level annotations) - retrofit2 only"));
 
         // Ensure the OAS 3.x discriminator mappings include any descendent schemas that allOf
         // inherit from self, any oneOf schemas, any anyOf schemas, any x-discriminator-values,
@@ -311,6 +317,12 @@ public class JavaClientCodegen extends AbstractJavaCodegen
         final String apiFolder = (sourceFolder + '/' + apiPackage).replace(".", "/");
         authFolder = (sourceFolder + '/' + invokerPackage + ".auth").replace(".", "/");
 
+        boolean interfaceOnly = RETROFIT_2.equals(getLibrary()) && additionalProperties.containsKey(INTERFACE_ONLY);
+        if (additionalProperties.containsKey(ADDITIONAL_API_ANNOTATIONS)) {
+            String additionalAnnotationsList = additionalProperties.get(ADDITIONAL_API_ANNOTATIONS).toString();
+            additionalProperties.put(ADDITIONAL_API_ANNOTATIONS, Arrays.asList(additionalAnnotationsList.split(";")));
+        }
+
         //Common files
         supportingFiles.add(new SupportingFile("pom.mustache", "", "pom.xml").doNotOverwrite());
         supportingFiles.add(new SupportingFile("README.mustache", "", "README.md").doNotOverwrite());
@@ -394,7 +406,9 @@ public class JavaClientCodegen extends AbstractJavaCodegen
         } else if (RETROFIT_2.equals(getLibrary())) {
             supportingFiles.add(new SupportingFile("auth/OAuthOkHttpClient.mustache", authFolder, "OAuthOkHttpClient.java"));
             supportingFiles.add(new SupportingFile("CollectionFormats.mustache", invokerFolder, "CollectionFormats.java"));
-            forceSerializationLibrary(SERIALIZATION_LIBRARY_GSON);
+            if (!interfaceOnly) {
+            	forceSerializationLibrary(SERIALIZATION_LIBRARY_GSON);
+            }
             if (RETROFIT_2.equals(getLibrary()) && !usePlayWS) {
                 supportingFiles.add(new SupportingFile("JSON.mustache", invokerFolder, "JSON.java"));
             }
@@ -567,6 +581,12 @@ public class JavaClientCodegen extends AbstractJavaCodegen
                 supportingFiles.add(new SupportingFile("auth/OAuth.mustache", authFolder, "OAuth.java"));
                 supportingFiles.add(new SupportingFile("auth/OAuthFlow.mustache", authFolder, "OAuthFlow.java"));
             }
+        }
+        
+        if (interfaceOnly) {
+        	supportingFiles.clear();
+            supportingFiles.add(new SupportingFile("CollectionFormats.mustache", invokerFolder, "CollectionFormats.java"));
+            supportingFiles.add(new SupportingFile("StringUtil.mustache", invokerFolder, "StringUtil.java"));
         }
     }
 
