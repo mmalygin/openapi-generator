@@ -368,6 +368,11 @@ public class DefaultCodegen implements CodegenConfig {
             this.setDisallowAdditionalPropertiesIfNotPresent(Boolean.parseBoolean(additionalProperties
                     .get(CodegenConstants.DISALLOW_ADDITIONAL_PROPERTIES_IF_NOT_PRESENT).toString()));
         }
+        if (additionalProperties.containsKey(CodegenConstants.USE_ONEOF_INTERFACES)) {
+            this.setUseOneOfInterfaces(Boolean.parseBoolean(additionalProperties
+                    .get(CodegenConstants.USE_ONEOF_INTERFACES).toString()));
+            this.addOneOfInterfaceImports = this.getUseOneOfInterfaces();
+        }
     }
 
     /***

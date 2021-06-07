@@ -281,6 +281,9 @@ public class CodegenConstants {
     public static final String CASE_INSENSITIVE_RESPONSE_HEADERS = "caseInsensitiveResponseHeaders";
     public static final String CASE_INSENSITIVE_RESPONSE_HEADERS_DESC = "Make API response's headers case-insensitive";
 
+    public static final String USE_ONEOF_INTERFACES = "useOneOfInterfaces";
+    public static final String USE_ONEOF_INTERFACES_DESC = "Generate interfaces for OneOf types";
+
     // Not user-configurable. System provided for use in templates.
 
     public static final String GENERATE_APIS = "generateApis";
