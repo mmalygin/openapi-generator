@@ -63,6 +63,7 @@ public class JavaClientCodegen extends AbstractJavaCodegen
     public static final String MICROPROFILE_FRAMEWORK = "microprofileFramework";
     public static final String USE_ABSTRACTION_FOR_FILES = "useAbstractionForFiles";
     public static final String DYNAMIC_OPERATIONS = "dynamicOperations";
+    public static final String INTERFACE_ONLY = "interfaceOnly";
 
     public static final String PLAY_24 = "play24";
     public static final String PLAY_25 = "play25";
@@ -390,6 +391,8 @@ public class JavaClientCodegen extends AbstractJavaCodegen
             supportingFiles.add(new SupportingFile("auth/Authentication.mustache", authFolder, "Authentication.java"));
         }
 
+        boolean interfaceOnly = additionalProperties.containsKey(INTERFACE_ONLY) && Boolean.parseBoolean(String.valueOf(additionalProperties.get(INTERFACE_ONLY)));
+
         if (FEIGN.equals(getLibrary())) {
             forceSerializationLibrary(SERIALIZATION_LIBRARY_JACKSON);
             supportingFiles.add(new SupportingFile("ParamExpander.mustache", invokerFolder, "ParamExpander.java"));
@@ -411,7 +414,9 @@ public class JavaClientCodegen extends AbstractJavaCodegen
         } else if (RETROFIT_2.equals(getLibrary())) {
             supportingFiles.add(new SupportingFile("auth/OAuthOkHttpClient.mustache", authFolder, "OAuthOkHttpClient.java"));
             supportingFiles.add(new SupportingFile("CollectionFormats.mustache", invokerFolder, "CollectionFormats.java"));
-            forceSerializationLibrary(SERIALIZATION_LIBRARY_GSON);
+            if (!interfaceOnly) {
+                forceSerializationLibrary(SERIALIZATION_LIBRARY_GSON);
+            }
             if (RETROFIT_2.equals(getLibrary()) && !usePlayWS) {
                 supportingFiles.add(new SupportingFile("JSON.mustache", invokerFolder, "JSON.java"));
             }
@@ -601,6 +606,12 @@ public class JavaClientCodegen extends AbstractJavaCodegen
                 supportingFiles.add(new SupportingFile("auth/OauthPasswordGrant.mustache", authFolder, "OauthPasswordGrant.java"));
                 supportingFiles.add(new SupportingFile("auth/OauthClientCredentialsGrant.mustache", authFolder, "OauthClientCredentialsGrant.java"));
             }
+        }
+
+        if (interfaceOnly && isLibrary(RETROFIT_2)) {
+            supportingFiles.clear();
+            supportingFiles.add(new SupportingFile("CollectionFormats.mustache", invokerFolder, "CollectionFormats.java"));
+            supportingFiles.add(new SupportingFile("StringUtil.mustache", invokerFolder, "StringUtil.java"));
         }
     }
 
